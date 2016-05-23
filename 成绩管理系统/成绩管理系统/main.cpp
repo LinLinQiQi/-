@@ -303,6 +303,7 @@ int main(int argc, const char * argv[]) {
             case 0:  ;                                      //退出系统
             default:  ;                                     //出错提示
         }
+        cout<<"修改测试"<<endl;
     }
     return 0;
 }
