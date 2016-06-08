@@ -20,7 +20,6 @@ typedef  struct Student
     int Englishscore;
     int Cscore;
     int Physicscore;
-    //struct Student *next;
 }Student;
 
 struct Degrad
@@ -71,10 +70,11 @@ int Menu()
     printf("5.按每门课程平均分从高到低排出名次表（课程排名）\n");
     printf("6.按学号从小到大排出成绩表\n");
     printf("7.按姓名的字典顺序排出成绩表\n");
-    printf("8.按学号查询学生排名及其考试成绩\n");
-    printf("9.按姓名的字典顺序排出成绩表\n");
+    printf("8.按学号查询学生排名及其考试成绩排名\n");
+    printf("9.按姓名查询学生排名及其考试成绩排名\n");
     printf("10.按优秀、良好、中等、及格、不及格5个类别，对每门课程分别统计每个类别的人数一级所占的百分比\n");
     printf("11.输出每个学生的学号、姓名、各科考试成绩\n");
+    printf("12.将学生信息从文件中读入\n");
     printf("0.Exit\n");
     printf("Please input your choice:\n");
     scanf("%d",&itemSelected);  //读入用户输入
@@ -118,10 +118,10 @@ void PrintScore()
 
 void AverSumofScore()
 {
-    float MathSum;
-    float EnglishSum;
-    float CSum;
-    float PhysicsSum;
+    float MathSum=0;
+    float EnglishSum=0;
+    float CSum=0;
+    float PhysicsSum=0;
     int cnt=0;
     for(vector<Student>::iterator it=list.begin();it!=list.end();++it)
     {
@@ -284,6 +284,40 @@ void StatisticAnalysis()
     cout<<"不及格的人的百分比为："<<Class[3].fail/cnt*100<<"％"<<endl;
     
 }
+bool flag=0;       //0表示未从文件中读取学生信息
+void ReadFile ()
+{
+    cout<<"请输入你想要写入文件的内容"<<endl;
+    int N;
+    cout<<"请输入你想要写几个学生信息在文件中"<<endl;
+    cin>>N;
+    FILE *fp;
+    fp=fopen("data", "w");
+    for (int i=0; i<N; i++) {
+        Student temp;
+        cin>>temp.number>>temp.name>>temp.Mathscore>>temp.Englishscore>>temp.Cscore>>temp.Physicscore;
+        fwrite(&temp, sizeof(Student), 1, fp);
+    }
+    fclose(fp);
+    
+    if(flag)  cout<<"已经从文件中读取学生信息"<<endl;
+    else
+    {
+    FILE *fp;
+    fp=fopen("data", "r");
+        if (fp==NULL) {
+            cout<<"wrong"<<endl;
+        }
+    while (!feof(fp)) {
+        Student temp;
+        if(1==fread(&temp, sizeof(Student), 1,fp ))
+        list.push_back(temp);
+        else break;
+    }
+        fclose(fp);
+    flag=1;
+    }
+}
 int main(int argc, const char * argv[]) {
     int itemSelected;
     while((itemSelected=Menu())!=0)
@@ -300,10 +334,10 @@ int main(int argc, const char * argv[]) {
             case 9: SearchbyName();    break;                  //按姓名查询学生排名及其考试成绩
             case 10:StatisticAnalysis();  break;               //按优秀、良好、中等、及格、不及格5个类别，对每门课程分别统计每个类别的人数一级所占的百分比
             case 11:PrintScore();      break;                  //输出每个学生的学号、姓名、各科考试成绩
+            case 12:ReadFile();      break;                     //将学生信息从文件中读入
             case 0:  ;                                      //退出系统
             default:  ;                                     //出错提示
         }
-        cout<<"修改测试"<<endl;
     }
     return 0;
 }
